@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/jquery-2.1.4.js"></script>
+    <script src="js/bootstrap.js"></script>'
+
+</head>
+<body>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Thumbnails Heading</div>
+    <div id="mypanel" class="panel-body" style="overflow: auto; height: 600px;">Thumbnails go here</div>
+</div>
+
+<button id='makethumb' type="button" class="btn btn-success">Make Thumbnails</button>
+
+<script>
+    // Similar stuff from e1cscan.js copied so i can test in separate program
+    var XFER_PORT = 8735;
+    var XFER_SSL = true; // Also must change https://localhost strings
+    var XFER_PROTOCOL = XFER_SSL ? 'https' : 'http';
+    var host = XFER_PROTOCOL + '://winhost:' + XFER_PORT + '/transfer/';
+//    var host = XFER_PROTOCOL + '://localhost:' + XFER_PORT + '/transfer/'; --- this line franco!
+
+    // Make string format
+    if (!String.format) {
+        String.format = function(format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function(match, number) {
+                return typeof args[number] != 'undefined'
+                        ? args[number]
+                        : match
+                        ;
+            });
+        };
+    }
+
+    var count = 0;
+    var batchDir = 'abc';
+
+    $(document).ready(function () {
+
+        $('#makethumb').click(
+                function () {
+                    addthumb(batchDir, ++count);
+                });
+
+        setTimeout(function () {
+                    $('#mypanel').empty();
+                },
+                500);
+
+    });
+
+    // Add next image to the thumbnail panel
+    function addthumb(batch, imagenum) {
+
+        var src = String.format("{0}/image/{1}/{2}/png/150/220/false", host, batch, imagenum);
+
+        var div = $('<div style="max-width: 150px; max-height: 220px; margin: 5px 5px 5px 5px; ' +
+                'border: 0px solid #ddd; display: inline-block;">' +
+                '<a href="#" class="thumbnail" style="margin-bottom: 0px;">' +
+                '<img src="' + src + '">' +
+                '</a>' +
+                '<div class="caption" style="text-align: center;" >' +
+                imagenum +
+                '</div>' +
+                '</div>');
+
+        // Get the panel
+        var panelbody = $('#mypanel');
+        panelbody.append(div);
+    };
+
+</script>
+
+</body>
+</html>
